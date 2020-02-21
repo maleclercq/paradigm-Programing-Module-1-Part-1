@@ -1,0 +1,12 @@
+class Addition:
+
+    def adding(self, a, b):
+        return (a+b)
+
+
+if __name__ == '__main__':
+    add_instance = Addition()
+    c = add_instance.adding(1,2)
+    print(c)
+    c= add_instance.adding("1","2")
+    print(c)
