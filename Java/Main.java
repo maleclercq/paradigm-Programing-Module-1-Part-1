@@ -1,4 +1,13 @@
 class Main {
+    public static void starTriangle(int n){
+        for(int i = 0; i < n; i++){
+          String s = "*";
+          for(int j = 0; j < i; j++){
+            s = s + "*";
+          }
+          System.out.println(s);
+        }
+      }
         public static void main(String[] args) {
             //part 1
             Container<String> cs = new Container<>();
@@ -16,5 +25,8 @@ class Main {
             Shape shape2;
             shape2 = new Square();
             System.out.println(shape2.points());
+
+            //part 3
+            starTriangle(6);
         }
     }
