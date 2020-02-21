@@ -1,3 +1,4 @@
+import java.util.*;
 class Main {
     public static void starTriangle(int n){
         for(int i = 0; i < n; i++){
@@ -28,5 +29,28 @@ class Main {
 
             //part 3
             starTriangle(6);
+
+            //part4
+            ArrayList<Integer> alist = new ArrayList<Integer>();
+            alist.add(12);
+            alist.add(3);
+            alist.add(17);
+            Collections.sort(alist);
+            Iterator<Integer>  iter = alist.iterator();
+            System.out.println("alist :");
+            while(iter.hasNext()){
+              System.out.println(iter.next());
+            }
+
+            Stack<Integer> stack = new Stack<Integer>();
+            stack.push(1);
+            stack.push(4);
+            stack.push(2);
+            Collections.sort(stack);
+            Iterator<Integer> iter2 = stack.iterator();
+            System.out.println("stack :");
+            while(iter2.hasNext()){
+              System.out.println(iter2.next());
+            }
         }
     }
