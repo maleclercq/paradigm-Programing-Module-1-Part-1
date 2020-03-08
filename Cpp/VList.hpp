@@ -20,15 +20,12 @@ namespace vlists
     template<typename, template<auto> typename, bool , auto> struct dropWhileHelper;
     template<typename, template<auto> typename> struct takeWhile;
     template<typename, template<auto> typename, bool, auto > struct takeWhileHelper;
-
-    template<typename, std::size_t> struct take;
-    template<typename, std::size_t> struct bb;//(!!) :: [a] -> Int -> [a]
-    template<typename, typename> struct append;//append :: [a] -> [a] -> [a]
-    template<template<auto> typename, typename> struct map;//map :: (a -> b) -> [a] -> [b]
-
+    template<typename, auto> struct elem;
+    template<typename> struct length;
+    template<typename> struct min;
+    template<typename> struct max;
     template<typename,std::size_t> struct drop;
     template<typename,std::size_t,bool> struct dropHelper;
-    template<typename,std::size_t>struct splitAt;
 
     template<typename> struct tail;//tail :: [a] -> [a]
     template<typename> struct init;//init :: [a] -> [a]
@@ -43,7 +40,6 @@ namespace vlists
 
 //Project***********************************************************************
 
-
 template<>
 struct sum<List<>>
 {
@@ -56,7 +52,9 @@ struct sum< List<X, Xs...> >
     static constexpr auto value =X + sum<List<Xs...>>::value;
 //    using type = typename prepend<X, typename init<List<Xs...>>::type>::type;
 };
+
 //*****************************************************************************
+
 template<>
 struct and_list<List<>>
 {
@@ -152,39 +150,88 @@ struct takeWhileHelper<List<>,P,true,prev>{
     using type = List<prev>;
 };
 
-//END PROJECT******************************************************************
+//*****************************************************************************
 
-template<auto X, auto... Xs>
-struct head<List<X, Xs...>>//head (x: xs)
-{
-static constexpr auto value = X;//= x
+template<auto X,auto... Xs,auto e>
+struct elem<List<X,Xs...>,e>{
+    static constexpr auto value = (e==X) ? true : elem<List<Xs...>,e>::value;
+};
+
+template<auto e>
+struct elem<List<>,e>{
+    static constexpr auto value = false;
 };
 
 //*****************************************************************************
 
 template<auto X,auto... Xs>
-struct tail<List<X,Xs...>>
-{
-    using type = List<Xs...>;
+struct length<List<X,Xs...>>{
+    static constexpr auto value = 1+length<List<Xs...>>::value;
+};
+
+template<>
+struct length<List<>>{
+    static constexpr auto value = 0;
 };
 
 //*****************************************************************************
-template<auto X,auto... Xs,std::size_t N>
-struct drop<List<X,Xs...>,N>
-{
-      using type = dropHelper<List<Xs...>,N,N==0>;
+
+template<auto X,auto... Xs>
+struct min<List<X,Xs...>>{
+    static constexpr auto value = (X < min<List<Xs...>>::value) ? X : min<List<Xs...>>::value;
 };
 
-template<auto X,auto... Xs,std::size_t N>
-struct dropHelper<List<X,Xs...>,N,true>
+template<auto X>
+struct min<List<X>>{
+    static constexpr auto value = X;
+};
+
+template<>
+struct min<List<>>{
+    static constexpr auto value = 0;
+};
+
+//*****************************************************************************
+
+template<auto X,auto... Xs>
+struct max<List<X,Xs...>>{
+    static constexpr auto value = (X > max<List<Xs...>>::value) ? X : max<List<Xs...>>::value;
+};
+
+template<auto X>
+struct max<List<X>>{
+    static constexpr auto value = X;
+};
+
+template<>
+struct max<List<>>{
+    static constexpr auto value = 0;
+};
+
+//*****************************************************************************
+
+template<std::size_t N>
+struct drop<List<>,N>
 {
     using type = List<>;
 };
 
 template<auto X,auto... Xs,std::size_t N>
+struct drop<List<X,Xs...>,N>
+{
+    using type = typename dropHelper<List<X,Xs...>,N-1,N==0>::type;
+};
+
+template<auto X,auto... Xs,std::size_t N>
+struct dropHelper<List<X,Xs...>,N,true>
+{
+    using type = List<X,Xs...>;
+};
+
+template<auto X,auto... Xs,std::size_t N>
 struct dropHelper<List<X,Xs...>,N,false>
 {
-    using type = dropHelper<List<Xs...>,N-1,N==0>;
+    using type = typename dropHelper<List<Xs...>,N-1,N==0>::type;
 };
 
 template<std::size_t N,bool B>
@@ -192,6 +239,9 @@ struct dropHelper<List<>,N,B>
 {
     using type = List<>;
 };
+
+
+//END PROJECT******************************************************************
 
 template<auto X>
 struct last<List<X>>
@@ -203,38 +253,6 @@ template<auto X, auto... Xs>
 struct last<List<X, Xs...>>
 {
     static constexpr auto value = last<List<Xs...>>::value;
-};
-
-template<auto X,auto... Xs>
-struct take<List<X,Xs ...>,0>
-{
-    using type = List<>;
-};
-
-template<std::size_t N>
-struct take<List<>, N>
-{
-    using type = List<>;
-};
-//*****************************************************************************
-template<auto X, auto... Xs>
-struct bb<List<X, Xs...>, 0>
-{
-static constexpr auto value = X;
-};
-
-//Think about it: Why is the following wrong?
-//Can you make sense of the error message you get when trying it?
-//template<auto X, auto... Xs, auto N>
-//struct bb<List<X, Xs...>, N + 1>
-//{
-//  static constexpr auto value = bb<List<Xs...>, N>::value;
-//};
-
-template<auto X, auto... Xs, std::size_t N>
-struct bb<List<X, Xs...>, N>
-{
-static constexpr auto value = bb<List<Xs...>, N - 1>::value;
 };
 
 //*****************************************************************************
@@ -254,30 +272,5 @@ using type = typename prepend<X, typename init<List<Xs...>>::type>::type;
 };
 
 //*****************************************************************************
-
-template<typename YsList>//Is YsList safe enough?
-struct append<List<>, YsList> {using type = YsList;};
-
-template<auto X, auto... Xs, typename YsList>
-struct append<List<X, Xs...>, YsList>
-{
-using type = typename prepend<X, typename append<List<Xs...>, YsList>::type>::type;
-};
-
-//The following version is simpler and doesn't require recursion.
-//Yet, it doesn't take after it's Haskell predecessor.
-//template<auto... Xs, auto... Ys>
-//struct append<List<Xs...>, List<Ys...>> {using type = List<Xs..., Ys...>;};
-
-//*****************************************************************************
-
-template<template<auto> typename F>
-struct map<F, List<>> {using type = List<>;};
-
-template<template<auto> typename F, auto X, auto... Xs>
-struct map<F, List<X, Xs...>>
-{
-using type = typename prepend<F<X>::value, typename map<F, List<Xs...>>::type>::type;
-};
 
 }//namespace vlists
