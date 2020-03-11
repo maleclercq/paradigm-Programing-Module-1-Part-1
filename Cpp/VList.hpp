@@ -16,6 +16,11 @@ namespace vlists
     template<typename> struct sum;
     template<typename> struct and_list;
     template<typename> struct or_list;
+    template<typename, template<auto> typename> struct all;
+    template<typename, template<auto> typename> struct any;
+    template<typename> struct product;
+    template<typename> struct foldr;
+    template<typename> struct foldrl;
     template<typename, template<auto> typename> struct dropWhile;
     template<typename, template<auto> typename, bool , auto> struct dropWhileHelper;
     template<typename, template<auto> typename> struct takeWhile;
@@ -272,5 +277,52 @@ using type = typename prepend<X, typename init<List<Xs...>>::type>::type;
 };
 
 //*****************************************************************************
+
+//*****************************************************************************
+
+template<>
+struct product<List<>>
+{
+    static constexpr auto value = 1;
+};
+
+template<auto X, auto... Xs>
+struct product< List<X, Xs...> >
+{
+    static constexpr auto value = X * product<List<Xs...>>::value;
+};
+
+//*****************************************************************************
+
+template<template<auto> typename P>
+struct all<List<>,P>{
+    static constexpr auto value = true;
+};
+
+
+template<auto X,auto... Xs, template<auto> typename P>
+struct all<List<X,Xs...>,P>{
+    static constexpr auto value = P<X> & all<List<Xs...>,P>;
+};
+
+//*****************************************************************************
+template<template<auto> typename P>
+struct any<List<>,P>{
+    static constexpr auto value = true;
+};
+
+
+template<auto X,auto... Xs, template<auto> typename P>
+struct any<List<X,Xs...>,P>{
+    static constexpr auto value = P<X> || all<List<Xs...>,P>;
+};
+
+template<auto X, template<auto> typename P>
+struct any<List<X>,P>{
+    static constexpr auto value = P<X>
+};
+
+//*****************************************************************************
+
 
 }//namespace vlists
