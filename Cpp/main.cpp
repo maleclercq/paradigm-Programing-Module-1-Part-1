@@ -174,6 +174,13 @@ struct pair
     static constexpr bool value = T % 2 = 0;
 };
 
+template<auto T, auto V>
+struct plus_one
+{
+    static constexpr auto value = T + V;
+
+};
+
 
 void test_v_all(){
     using L1 = vlists::List<1,2,3,4,5,6,7,8>;
