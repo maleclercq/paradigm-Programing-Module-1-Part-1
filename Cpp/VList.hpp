@@ -323,6 +323,33 @@ struct any<List<X>,P>{
 };
 
 //*****************************************************************************
+    
+    template<template<auto> typename F,auto V>
+struct foldr<F,V,List<>>
+{
+    using type = V;
+};
+
+template<auto X,auto... Xs,template<auto> typename F, auto V>
+struct foldr<F,V,List<X,Xs...>>
+{
+    using type = typename F<X, foldr<F,V,XS...>>::type;
+};
+
+//******************************************************************************
+template<auto X>
+struct foldr1<List<X>>
+{
+    using type = X;
+};
+
+template<auto X,auto... Xs,template<auto> typename F>
+struct foldr1<F,List<X,Xs...>>
+{
+    using type = typename F<X, foldr1<F,XS...>>::type;
+};
+
+//******************************************************************************
 
 
 }//namespace vlists
