@@ -175,7 +175,7 @@ struct pair
 };
 
 template<auto T, auto V>
-struct plus_one
+struct plus_value
 {
     static constexpr auto value = T + V;
 
