@@ -2,9 +2,7 @@
 
 #include "VList.hpp"
 #include "VListUtils.hpp"
-
-//#include "TListSetup.hpp"
-//#include "TList.hpp"
+#include "TList.hpp"
 
 using std::cout;
 using std::endl;
@@ -236,7 +234,53 @@ void test_v_foldr1(){
     static_assert(vlists::foldr1<plus_value,L2>::value == 100);
 
 }
-
+//tests pour tlists
+void test_t_length(){
+  using L1 = tlists::List<int, int>;
+  using L2 = tlists::List<>;
+  using L3 = tlists::List<char, double, int>;
+  static_assert(tlists::length<L1>::value==2);
+  static_assert(tlists::length<L2>::value==0);
+  static_assert(tlists::length<L3>::value==3);
+}
+void test_t_sum(){
+  using L1 = tlists::List<>;
+  using L2 = tlists::List<int, int>;
+  static_assert(tlists::sum<L1>::value==0);
+  static_assert(tlists::sum<L2>::value==8);
+}
+void test_t_product(){
+  using L1 = tlists::List<>;
+  using L2 = tlists::List<int, int>;
+  using L3 = tlists::List<int, double, short>;
+  static_assert(tlists::product<L1>::value==1);
+  static_assert(tlists::product<L2>::value==16);//4*4
+  static_assert(tlists::product<L3>::value==64);//4*8*2
+}
+void test_t_min1(){
+  using L1 = tlists::List<>;
+  using L2 = tlists::List<int, double>;
+  using L3 = tlists::List<int, double, short>;
+  static_assert(tlists::min1<L1>::value==0);
+  static_assert(tlists::min1<L2>::value==4);
+  static_assert(tlists::min1<L3>::value==2);
+}
+void test_t_min(){
+  using L1 = tlists::List<>;
+  using L2 = tlists::List<int, double>;
+  using L3 = tlists::List<int, double, short>;
+  static_assert(std::is_same<tlists::min<L1>::type, void>::value);
+  static_assert(std::is_same<tlists::min<L2>::type, int>::value);
+  static_assert(std::is_same<tlists::min<L3>::type, short>::value);
+}
+void test_t_max(){
+  using L1 = tlists::List<>;
+  using L2 = tlists::List<int, double, int, int, char>;
+  using L3 = tlists::List<int, char, short>;
+  static_assert(std::is_same<tlists::max<L1>::type, void>::value);
+  static_assert(std::is_same<tlists::max<L2>::type, double>::value);
+  static_assert(std::is_same<tlists::max<L3>::type, int>::value);
+}
 int main() {
     test_v_and();
     test_v_or();
@@ -253,6 +297,13 @@ int main() {
     test_v_product();
     test_v_foldr();
     test_v_foldr1();
+    //tests pour tlists
+    test_t_length();
+    test_t_sum();
+    test_t_product();
+    test_t_min1();
+    test_t_min();
+    test_t_max();
 
     cout << "Everything is fine" <<endl;
 return 0;
