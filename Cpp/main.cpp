@@ -281,6 +281,26 @@ void test_t_max(){
   static_assert(std::is_same<tlists::max<L2>::type, double>::value);
   static_assert(std::is_same<tlists::max<L3>::type, int>::value);
 }
+void test_t_or(){
+  using L1 = tlists::List<double>;
+  using L2 = tlists::List<std::true_type, void>;
+  using L3 = tlists::List<std::false_type>;
+  using L4 = tlists::List<bool, std::false_type, char>;
+  static_assert(std::is_same<tlists::or_list<L1>::type, std::true_type>::value);
+  static_assert(std::is_same<tlists::or_list<L2>::type, std::true_type>::value);
+  static_assert(std::is_same<tlists::or_list<L3>::type, std::false_type>::value);
+  static_assert(std::is_same<tlists::or_list<L4>::type, std::false_type>::value);
+}
+void test_t_and(){
+  using L1 = tlists::List<double, double>;
+  using L2 = tlists::List<std::false_type>;
+  using L3 = tlists::List<std::true_type, void>;
+  using L4 = tlists::List<std::true_type>;
+  static_assert(std::is_same<tlists::and_list<L1>::type, std::false_type>::value);
+  static_assert(std::is_same<tlists::and_list<L2>::type, std::false_type>::value);
+  static_assert(std::is_same<tlists::and_list<L3>::type, std::false_type>::value);
+  static_assert(std::is_same<tlists::and_list<L4>::type, std::true_type>::value);
+}
 int main() {
     test_v_and();
     test_v_or();
@@ -304,6 +324,8 @@ int main() {
     test_t_min1();
     test_t_min();
     test_t_max();
+    test_t_or();
+    test_t_and();
 
     cout << "Everything is fine" <<endl;
 return 0;

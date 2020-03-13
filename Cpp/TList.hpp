@@ -83,4 +83,34 @@ namespace tlists{
     typename max<List<Ts...>>::type
     >::type;
   };
+
+  //or_list
+  template<typename> struct or_list;
+  template<> struct or_list<List<>>{
+    using type = std::true_type;
+  };
+  //returns 'true' type if no element is of 'false' type
+  template<typename T, typename... Ts> struct or_list<List<T, Ts...>> :
+    std::conditional<
+      std::is_same_v<T, std::false_type>,
+      std::false_type,
+      or_list<List<Ts...>>
+    >::type
+  {};
+
+  //and_list
+  template<typename> struct and_list;
+  template<> struct and_list<List<>>{
+    using type = std::true_type;
+  };
+  //returns 'true' type if all elementa are of 'false' type
+  template<typename T, typename... Ts> struct and_list<List<T, Ts...>> :
+    std::conditional<
+      std::is_same_v<T, std::true_type>,
+      and_list<List<Ts...>>,
+      std::false_type
+    >::type
+  {};
+
+
 }
