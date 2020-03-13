@@ -4,6 +4,7 @@
 
 ## TList.hpp 
 All the functions for the TList implementations
+As a list of types is abstract, we decided to define the sum, product, min and max based on the size of the types.
 
 ## ToString.hpp
 Implementation to print a List
