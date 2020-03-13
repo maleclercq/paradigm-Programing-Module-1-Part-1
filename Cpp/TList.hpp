@@ -130,4 +130,22 @@ namespace tlists{
   struct takeWhile<P, List<T, Ts...>>{ //recursive case
     using type = typename takeWhileHelper<P, List<Ts...>, P<T>::value, T>::type;
   };
+
+  //foldr
+  template<template<typename, typename> typename, typename, typename> struct foldr;
+
+  template<template<typename, typename> typename F, typename B> struct foldr<F, B, List<>>{ //base case : empty list
+    using type = B;
+  };
+
+  template<template<typename, typename> typename F, typename B, typename T, typename... Ts> struct foldr<F, B, List<T, Ts...>>{ //recursive case
+    using type = typename F<T, typename foldr<F, B, List<Ts...>>::type>::type;
+  };
+
+  //foldr1
+  template<template<typename, typename> typename, typename> struct foldr1;
+
+  template<template<typename, typename> typename F, typename T, typename... Ts> struct foldr1<F, List<T, Ts...>>{
+    using type = typename foldr<F, T, List<Ts...>>::type;
+  };
 }

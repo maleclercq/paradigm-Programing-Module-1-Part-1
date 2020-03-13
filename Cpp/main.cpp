@@ -305,6 +305,30 @@ void test_t_takeWhile(){
   static_assert(tlists::sum<L3>::value==0);
   static_assert(tlists::sum<L5>::value==4);
 }
+
+template<typename T, typename V>
+struct max_size{
+    using type = typename std::conditional<
+        (sizeof(T) > sizeof(V)),
+        T,
+        V
+    >::type;
+};
+
+void test_t_foldr(){
+    using L1 = tlists::List<bool,int>;
+    using L2 = tlists::List<double>;
+    static_assert(std::is_same<tlists::foldr<max_size,char,L1>::type, int>::value);
+    static_assert(std::is_same<tlists::foldr<max_size,int,L2>::type, double>::value);
+    static_assert(std::is_same<tlists::foldr<max_size,double,L1>::type, double>::value);
+    static_assert(std::is_same<tlists::foldr<max_size,bool,L2>::type, double>::value);
+}
+void test_t_foldr1(){
+    using L1 = tlists::List<bool,char,int,double,void>;
+    using L2 = tlists::List<int, int>;
+    //static_assert(std::is_same<tlists::foldr1<max_size,L1>::type, double>::value);
+    //static_assert(std::is_same<tlists::foldr1<max_size,L2>::type, int>::value);
+}
 int main() {
     test_v_and();
     test_v_or();
@@ -330,6 +354,8 @@ int main() {
     test_t_or();
     test_t_and();
     test_t_takeWhile();
+    test_t_foldr();
+    test_t_foldr1();
 
     cout << "Everything is fine" <<endl;
 return 0;
