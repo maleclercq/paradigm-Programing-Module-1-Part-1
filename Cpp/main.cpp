@@ -169,7 +169,7 @@ void test_v_drop(){
 template<auto T>
 struct pair
 {
-    static constexpr bool value = T % 2 = 0;
+    static constexpr bool value = T % 2 == 0;
 };
 
 template<auto T, auto V>
@@ -220,9 +220,9 @@ void test_v_foldr(){
     using L2 = vlists::List<1>;
 
     static_assert(vlists::foldr<plus_value,0,L1>::value == 15);
-    static_assert(vlists::foldr<plus_value,0,L2>::value == 0);
+    static_assert(vlists::foldr<plus_value,0,L2>::value == 1);
     static_assert(vlists::foldr<plus_value,10,L1>::value == 25);
-    static_assert(vlists::foldr<plus_value,10,L2>::value == 10);
+    static_assert(vlists::foldr<plus_value,10,L2>::value == 11);
 
 }
 void test_v_foldr1(){
@@ -230,8 +230,8 @@ void test_v_foldr1(){
     using L1 = vlists::List<1,2,3,4,5>;
     using L2 = vlists::List<100>;
 
-    static_assert(vlists::foldr1<plus_value,L1>::value == 15);
-    static_assert(vlists::foldr1<plus_value,L2>::value == 100);
+    static_assert(vlists::foldrl<plus_value,L1>::value == 15);
+    static_assert(vlists::foldrl<plus_value,L2>::value == 100);
 
 }
 //tests pour tlists
