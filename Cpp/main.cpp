@@ -257,14 +257,6 @@ void test_t_product(){
   static_assert(tlists::product<L2>::value==16);//4*4
   static_assert(tlists::product<L3>::value==64);//4*8*2
 }
-void test_t_min1(){
-  using L1 = tlists::List<>;
-  using L2 = tlists::List<int, double>;
-  using L3 = tlists::List<int, double, short>;
-  static_assert(tlists::min1<L1>::value==0);
-  static_assert(tlists::min1<L2>::value==4);
-  static_assert(tlists::min1<L3>::value==2);
-}
 void test_t_min(){
   using L1 = tlists::List<>;
   using L2 = tlists::List<int, double>;
@@ -300,7 +292,7 @@ void test_t_and(){
   static_assert(std::is_same<tlists::and_list<L2>::type, std::false_type>::value);
   static_assert(std::is_same<tlists::and_list<L3>::type, std::false_type>::value);
   static_assert(std::is_same<tlists::and_list<L4>::type, std::true_type>::value);
-
+}
 template<typename T> struct isChar{static constexpr bool value = std::is_same<T, char>::value;};
 template<typename T> struct isInt{static constexpr bool value = std::is_same<T, int>::value;};
 void test_t_takeWhile(){
@@ -333,13 +325,12 @@ int main() {
     test_t_length();
     test_t_sum();
     test_t_product();
-    test_t_min1();
     test_t_min();
     test_t_max();
     test_t_or();
     test_t_and();
     test_t_takeWhile();
-    
+
     cout << "Everything is fine" <<endl;
 return 0;
 }
