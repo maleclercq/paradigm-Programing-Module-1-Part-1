@@ -281,6 +281,18 @@ void test_t_max(){
   static_assert(std::is_same<tlists::max<L2>::type, double>::value);
   static_assert(std::is_same<tlists::max<L3>::type, int>::value);
 }
+template<typename T> struct isChar{static constexpr bool value = std::is_same<T, char>::value;};
+template<typename T> struct isInt{static constexpr bool value = std::is_same<T, int>::value;};
+void test_t_takeWhile(){
+  using L1 = tlists::List<int, int, char, char>;
+  using L2 = tlists::takeWhile<isInt, L1>::type;
+  using L3 = tlists::takeWhile<isChar, L1>::type;
+  using L4 = tlists::List<int, char, char, double, int>;
+  using L5 = tlists::takeWhile<isInt, L4>::type;
+  static_assert(tlists::sum<L2>::value==8);
+  static_assert(tlists::sum<L3>::value==0);
+  static_assert(tlists::sum<L5>::value==4);
+}
 int main() {
     test_v_and();
     test_v_or();
@@ -304,7 +316,8 @@ int main() {
     test_t_min1();
     test_t_min();
     test_t_max();
-
+    test_t_takeWhile();
+    
     cout << "Everything is fine" <<endl;
 return 0;
 }
