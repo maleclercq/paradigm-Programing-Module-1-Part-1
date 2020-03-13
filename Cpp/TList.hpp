@@ -39,18 +39,6 @@ namespace tlists{
     static constexpr auto value = sizeof(T) * product<List<Ts...>>::value;
   };
 
-  //min1
-  template<typename> struct min1; //min :: Ord a => [a] -> a
-  template<> struct min1<List<>>{ //base case : empty list
-    static constexpr auto value = 0;
-  };
-  template<typename T> struct min1<List<T>>{ //list of one type
-    static constexpr auto value = sizeof(T);
-  };
-  //returns the size of the smallest type
-  template<typename T, typename... Ts> struct min1<List<T, Ts...>>{ //recursive case
-    static constexpr auto value = (sizeof(T) < min1<List<Ts...>>::value) ? sizeof(T) : min1<List<Ts...>>::value;
-  };
   //min : returns the type of the smallest size in the list
   template<typename> struct min; //min :: Ord a => [a] -> a
   template<> struct min<List<>>{ //base case : empty list
@@ -82,5 +70,36 @@ namespace tlists{
     T,
     typename max<List<Ts...>>::type
     >::type;
+  };
+  
+  //takeWhileHelper
+  template<template<typename> typename, typename, bool, typename>
+  struct takeWhileHelper;
+  template<template<typename> typename P, typename Prev>
+  struct takeWhileHelper<P, List<>, false, Prev>{ //P is false, empty list
+    using type = List<>;
+  };
+  template<template<typename> typename P, typename Prev>
+  struct takeWhileHelper<P, List<>, true, Prev>{ //P is true, empty list
+    //using type = List<Prev>;
+    using type = List<>;
+  };
+  template<template<typename> typename P, typename T, typename... Ts, typename Prev>
+  struct takeWhileHelper<P, List<T, Ts...>, true, Prev> { //P is true, recursive case
+    using type = typename prepend<Prev, typename takeWhileHelper<P, List<Ts...>, P<T>::value, T>::type>::type;
+  };
+  template<template<typename> typename P, typename T, typename... Ts, typename Prev>
+  struct takeWhileHelper<P, List<T, Ts...>, false, Prev>{ //P is false : stop
+    using type = List<>;
+  };
+  //takeWhile
+  template<template<typename> typename, typename>
+  struct takeWhile; //takeWhile :: (a -> Bool) -> [a] -> [a]
+  template<template<typename> typename P> struct takeWhile<P, List<>>{ //base case : empty list
+    using type = List<>;
+  };
+  template<template<typename> typename P, typename T, typename... Ts>
+  struct takeWhile<P, List<T, Ts...>>{ //recursive case
+    using type = typename takeWhileHelper<P, List<Ts...>, P<T>::value, T>::type;
   };
 }
