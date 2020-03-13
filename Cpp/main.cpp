@@ -324,10 +324,10 @@ void test_t_foldr(){
     static_assert(std::is_same<tlists::foldr<max_size,bool,L2>::type, double>::value);
 }
 void test_t_foldr1(){
-    using L1 = tlists::List<bool,char,int,double,void>;
+    using L1 = tlists::List<bool,char,int,double>;
     using L2 = tlists::List<int, int>;
-    //static_assert(std::is_same<tlists::foldr1<max_size,L1>::type, double>::value);
-    //static_assert(std::is_same<tlists::foldr1<max_size,L2>::type, int>::value);
+    static_assert(std::is_same<tlists::foldr1<max_size,L1>::type, double>::value);
+    static_assert(std::is_same<tlists::foldr1<max_size,L2>::type, int>::value);
 }
 int main() {
     test_v_and();
